@@ -1,5 +1,9 @@
 const input = document.querySelector('.input');
 const info = document.querySelector('.info');
+const meaningContainer = document.querySelector('.meaning-container');
+const title = document.querySelector('.title');
+const meaning = document.querySelector('.meaning');
+const audio = document.querySelector('.control');
 
 async function fetchApi(word) {
   try {
@@ -7,10 +11,23 @@ async function fetchApi(word) {
   info.textContent = `Searching the meaning of ${word}`;
   const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
   const result = await fetch(url).then((res) => res.json());
-  info.style.display = 'none';
-  console.log(result);
+
+  if(result.title) {
+    info.style.display = 'none';
+    title.textContent = word;
+    meaning.textContent = 'N/A';
+    audio.style.display = 'none';
+  } else{
+    info.style.display = 'none';
+    meaningContainer.style.display = 'block';
+    audio.style.display = 'inline-flex';
+    title.textContent = word;
+    meaning.textContent = result[0].meanings[0].definitions[0].definition;
+    audio.src = result[0].phonetics[0].audio;
+  }
   } catch (error) {
     console.log(error);
+    info.innerHTML = 'An error occcured, try again later';
   }
 }
 
